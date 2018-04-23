@@ -20,7 +20,7 @@ return [
         'doctrine' => [
             'meta' => [
                 'entity_path' => [
-                    'app/src/Entity'
+                    'src/Entity'
                 ],
                 'auto_generate_proxies' => true,
                 'proxy_dir' =>  __DIR__.'/../cache/proxies',
@@ -28,10 +28,10 @@ return [
             ],
             'connection' => [
                 'driver'   => 'pdo_mysql',
-                'host'     => 'localhost',
-                'dbname'   => 'your-db',
-                'user'     => 'your-user-name',
-                'password' => 'your-password',
+                'host'     => 'windows',
+                'dbname'   => 'm06-practicaslim',
+                'user'     => 'mac',
+                'password' => 'mac',
             ]
         ]
     ],
