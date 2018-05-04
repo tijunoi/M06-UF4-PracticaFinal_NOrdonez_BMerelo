@@ -33,3 +33,13 @@ $container['em'] = function ($c) {
 $container[Src\Controllers\PublicController::class] = function ($c) {
     return new Src\Controllers\PublicController($c["em"]);
 };
+
+//Override the default Not Found Handler
+$container['notFoundHandler'] = function ($c) {
+    return function ($request, $response) use ($c) {
+        $data = array();
+        $data["msg"] = "This route does not exist!";
+        return $c['response']
+            ->withJson($data,404);
+    };
+};
