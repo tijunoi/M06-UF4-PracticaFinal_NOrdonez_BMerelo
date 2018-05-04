@@ -93,9 +93,9 @@ class Notes
     private $lastmodificationdata;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="user", type="string", length=20, nullable=true)
+     * @var Usuari
+     * @ORM\ManyToOne(targetEntity="Src\Entity\Usuari", inversedBy="notes")
+     * @ORM\JoinColumn(name="id_usuari", referencedColumnName="id")
      */
     private $user;
 
@@ -273,22 +273,6 @@ class Notes
     public function setLastmodificationdata($lastmodificationdata)
     {
         $this->lastmodificationdata = $lastmodificationdata;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param null|string $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
     }
 
 
