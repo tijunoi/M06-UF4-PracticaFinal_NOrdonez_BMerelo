@@ -28,10 +28,10 @@ return [
             ],
             'connection' => [
                 'driver'   => 'pdo_mysql',
-                'host'     => 'windows',
+                'host'     => 'localhost',
                 'dbname'   => 'm06-practicaslim',
-                'user'     => 'mac',
-                'password' => 'mac',
+                'user'     => 'root',
+                'password' => null,
             ]
         ]
     ],

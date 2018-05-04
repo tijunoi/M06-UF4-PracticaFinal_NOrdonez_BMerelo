@@ -29,3 +29,7 @@ $container['em'] = function ($c) {
     );
     return \Doctrine\ORM\EntityManager::create($settings['doctrine']['connection'], $config);
 };
+
+$container[Src\Controllers\PublicController::class] = function ($c) {
+    return new Src\Controllers\PublicController($c["em"]);
+};
