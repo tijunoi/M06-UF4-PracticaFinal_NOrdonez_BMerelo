@@ -190,30 +190,67 @@ class NotesController
         return $response->withJson($data, $code);
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function insertAction(Request $request, Response $response, array $args){
+
+        $currentUser = $this->auth->getAuthenticatedUser($request);
+
+        $title = $request->getParsedBodyParam('title');
+        $content = $request->getParsedBodyParam('content');
+        $private = $request->getParsedBodyParam('private');
+        $tag1 = $request->getParsedBodyParam('tag1');
+        $tag2 = $request->getParsedBodyParam('tag2');
+        $tag3 = $request->getParsedBodyParam('tag3');
+        $tag4 = $request->getParsedBodyParam('tag4');
+        $book = $request->getParsedBodyParam('book');
+
+        if (!is_null($title) && !is_null($content) && !is_null($private)) {
+            //insert
+            $note = new Notes();
+            $note->setTitle($title);
+            $note->setContent($content);
+            if (strcmp($private,"true") == 0 ){
+                $note->setPrivate(true);
+            } else {
+                $note->setPrivate(false);
+            }
+            $note->setTag1($tag1);
+            $note->setTag2($tag2);
+            $note->setTag3($tag3);
+            $note->setTag4($tag4);
+            $note->setBook($book);
+            $note->setUser($currentUser);
+            $note->setCreateData(new \DateTime());
+
+            $this->em->persist($note);
+            $this->em->flush();
+            $data["msg"] = "The note has been created successfully";
+            $code = 201;
+
+        } else {
+            $data["msg"] = "Missing parameters title, content, or private";
+            $code = 400;
+        }
+
+        return $response->withJson($data,$code);
+
+    }
     public function testAction(Request $request, Response $response, array $args)
     {
 
-        $orderBy = $request->getQueryParam('order');
 
+        $mibool = $request->getParsedBodyParam('private');
 
-        $orderArray = null;
+        var_dump($mibool);
 
-        $orderBy = $request->getQueryParam('order');
-
-        if (!is_null($orderBy)) {
-            if (strcmp($orderBy, "titol") == 0) {
-                $orderArray = ["title" => 'ASC'];
-            } else if (strcmp($orderBy, "data") == 0) {
-                $orderArray = ["createData" => 'DESC'];
-            }
-        }
-
-        $data = array();
-
-        $data["order"] = $orderBy;
-        $data["array"] = $orderArray;
-
-        return $response->withJson($data, 200);
+        return var_dump($mibool);
     }
 
 

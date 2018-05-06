@@ -51,7 +51,7 @@ $app->group('/api', function () use ($app) {
 
     $app->get('/getPublic',NotesController::class . ':getPublicAction');
 
-    $app->get('/test', NotesController::class . ':testAction');
+    $app->post('/test', NotesController::class . ':testAction');
 
 });
 
