@@ -67,19 +67,19 @@ class NotesController
         /** @var Notes $note */
         foreach ($notes as $note) {
 
-            $data = array();
-            $data["id"] = $note->getId();
-            $data["title"] = $note->getTitle();
-            $data["content"] = $note->getContent();
-            $data["private"] = $note->getPrivate();
-            $data["tag1"] = $note->getTag1();
-            $data["tag2"] = $note->getTag2();
-            $data["tag3"] = $note->getTag3();
-            $data["tag4"] = $note->getTag4();
-            $data["book"] = $note->getBook();
-            $data["createData"] = $note->getCreateData();
-            $data["lastModificationData"] = $note->getLastmodificationdata();
-            $data[] = $data;
+            $new = array();
+            $new["id"] = $note->getId();
+            $new["title"] = $note->getTitle();
+            $new["content"] = $note->getContent();
+            $new["private"] = $note->getPrivate();
+            $new["tag1"] = $note->getTag1();
+            $new["tag2"] = $note->getTag2();
+            $new["tag3"] = $note->getTag3();
+            $new["tag4"] = $note->getTag4();
+            $new["book"] = $note->getBook();
+            $new["createData"] = $note->getCreateData();
+            $new["lastModificationData"] = $note->getLastmodificationdata();
+            $data[] = $new;
         }
         $code = 200;
 
@@ -119,19 +119,21 @@ class NotesController
         /** @var Notes $note */
         foreach ($notes as $note) {
 
-            $data = array();
-            $data["id"] = $note->getId();
-            $data["title"] = $note->getTitle();
-            $data["content"] = $note->getContent();
-            $data["private"] = $note->getPrivate();
-            $data["tag1"] = $note->getTag1();
-            $data["tag2"] = $note->getTag2();
-            $data["tag3"] = $note->getTag3();
-            $data["tag4"] = $note->getTag4();
-            $data["book"] = $note->getBook();
-            $data["createData"] = $note->getCreateData();
-            $data["lastModificationData"] = $note->getLastmodificationdata();
-            $data[] = $data;
+            $new = array();
+            $new["id"] = $note->getId();
+            $new["title"] = $note->getTitle();
+            $new["content"] = $note->getContent();
+            $new["private"] = $note->getPrivate();
+            $new["tag1"] = $note->getTag1();
+            $new["tag2"] = $note->getTag2();
+            $new["tag3"] = $note->getTag3();
+            $new["tag4"] = $note->getTag4();
+            $new["book"] = $note->getBook();
+            $new["user_id"] = $note->getUser()->getId();
+            $new["user_name"] = $note->getUser()->getNom();
+            $new["createData"] = $note->getCreateData();
+            $new["lastModificationData"] = $note->getLastmodificationdata();
+            $data[] = $new;
         }
         $code = 200;
 
