@@ -9,6 +9,7 @@
 namespace Src\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -144,6 +145,31 @@ class Usuari
     {
         $this->notes = $notes;
     }
+
+
+    /**
+     * @param string $token
+     * @param EntityManager $em
+     * @return Usuari|null
+     */
+    public static function validateToken($token, EntityManager $em){
+
+        /** @var Usuari $user */
+        $user = $em->getRepository('Src\Entity\Usuari')->findOneBy(array('clau' => $token));
+
+        if (!is_null($user)) {
+
+            if ($user->getLastLogin()->diff(new \DateTime())->i < 60){ //less than 60 minutes since last login
+                return $user;
+            } else {
+                return null;
+            }
+
+        }
+
+        return null;
+    }
+
 
 
 

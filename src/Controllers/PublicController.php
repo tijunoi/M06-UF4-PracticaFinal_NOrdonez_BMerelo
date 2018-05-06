@@ -31,9 +31,10 @@ class PublicController
     public function getAllAction(Request $request, Response $response, array $args){
 
 
+        $user = $this->em->getRepository('Src\Entity\Usuari')->find(1);
         $repo = $this->em->getRepository('Src\Entity\Notes');
 
-        $notes = $repo->findBy(array("user" => "LSAlumne"));
+        $notes = $repo->findBy(array("user" => $user));
 
 
         $data = array();
