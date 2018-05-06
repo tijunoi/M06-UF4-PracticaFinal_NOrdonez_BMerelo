@@ -7,6 +7,7 @@
  */
 
 namespace Src\Controllers;
+
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Src\Entity\Notes;
@@ -35,18 +36,37 @@ class NotesController
     }
 
 
-    public function getAllAction(Request $request, Response $response, array $args){
+    public function getAllAction(Request $request, Response $response, array $args)
+    {
 
         $currentUser = $this->auth->getAuthenticatedUser($request);
 
         $repo = $this->em->getRepository('Src\Entity\Notes');
 
-        $notes = $repo->findBy(array("user" => $currentUser));
+        $orderArray = null;
+
+        $orderBy = $request->getQueryParam('order');
+
+        if (!is_null($orderBy)) {
+            if (strcmp($orderBy, "titol") == 0) {
+                $orderArray = ["title" => 'ASC'];
+            } else if (strcmp($orderBy,"data") == 0){
+                $orderArray = ["createData" => 'DESC'];
+            }
+        }
+
+
+        if (is_null($orderArray)) {
+            $notes = $repo->findBy(array("user" => $currentUser));
+        } else {
+            $notes = $repo->findBy(array("user" => $currentUser), $orderArray);
+        }
+
 
 
         $data = array();
         /** @var Notes $note */
-        foreach ($notes as $note){
+        foreach ($notes as $note) {
 
             $new = array();
             $new["id"] = $note->getId();
@@ -58,7 +78,7 @@ class NotesController
             $new["tag3"] = $note->getTag3();
             $new["tag4"] = $note->getTag4();
             $new["book"] = $note->getBook();
-            $new["createData"] = $note->getCreatedata();
+            $new["createData"] = $note->getCreateData();
             $new["lastModificationData"] = $note->getLastmodificationdata();
             $data[] = $new;
         }
@@ -68,7 +88,32 @@ class NotesController
             $data["msg"] = "No notes found!";
             $code = 204;
         }
-        return $response->withJson($data,$code);
+        return $response->withJson($data, $code);
+    }
+
+    public function testAction(Request $request, Response $response, array $args){
+
+        $orderBy = $request->getQueryParam('order');
+
+
+        $orderArray = null;
+
+        $orderBy = $request->getQueryParam('order');
+
+        if (!is_null($orderBy)) {
+            if (strcmp($orderBy, "titol") == 0) {
+                $orderArray = ["title" => 'ASC'];
+            } else if (strcmp($orderBy,"data") == 0){
+                $orderArray = ["createData" => 'DESC'];
+            }
+        }
+
+        $data = array();
+
+        $data["order"] = $orderBy;
+        $data["array"] = $orderArray;
+
+        return $response->withJson($data, 200);
     }
 
 

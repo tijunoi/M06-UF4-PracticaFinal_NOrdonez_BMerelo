@@ -83,7 +83,7 @@ class Notes
      *
      * @ORM\Column(name="createData", type="date", nullable=true)
      */
-    private $createdata;
+    private $createData;
 
     /**
      * @var \DateTime|null
@@ -246,17 +246,17 @@ class Notes
     /**
      * @return \DateTime|null
      */
-    public function getCreatedata()
+    public function getCreateData()
     {
-        return $this->createdata;
+        return $this->createData;
     }
 
     /**
-     * @param \DateTime|null $createdata
+     * @param \DateTime|null $createData
      */
-    public function setCreatedata($createdata)
+    public function setCreateData($createData)
     {
-        $this->createdata = $createdata;
+        $this->createData = $createData;
     }
 
     /**
