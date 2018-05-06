@@ -30,9 +30,15 @@ $container['em'] = function ($c) {
     return \Doctrine\ORM\EntityManager::create($settings['doctrine']['connection'], $config);
 };
 
-$container[Src\Controllers\PublicController::class] = function ($c) {
-    return new Src\Controllers\PublicController($c["em"]);
+
+$container[\Src\Controllers\AuthController::class] = function ($c) {
+    return new Src\Controllers\AuthController($c["em"]);
 };
+
+$container[Src\Controllers\PublicController::class] = function ($c) {
+    return new Src\Controllers\PublicController($c["em"],$c[\Src\Controllers\AuthController::class]);
+};
+
 
 //Override the default Not Found Handler
 $container['notFoundHandler'] = function ($c) {

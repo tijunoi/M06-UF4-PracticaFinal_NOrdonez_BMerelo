@@ -20,7 +20,7 @@ $container = $app->getContainer();
 $authenticator = function ($request, \Slim\Middleware\TokenAuthentication $tokenAuth) use ($container){
     $token = $tokenAuth->findToken($request);
 
-    \Src\Entity\Usuari::validateToken($token,$container['em']);
+    \Src\Controllers\AuthController::validateToken($token,$container['em']);
 
     //no em guardo el valor i el paso perque aquest middleware no permet cridar a $next per passarli dades, aixi que tornem a cridar a la funcio
 };

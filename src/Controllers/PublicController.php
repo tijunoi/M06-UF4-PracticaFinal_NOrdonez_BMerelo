@@ -19,23 +19,29 @@ class PublicController
     public $em;
 
     /**
-     * PublicController constructor.
-     * @param $em \Doctrine\ORM\EntityManager
+     * @var AuthController
      */
-    public function __construct($em)
+    public $auth;
+
+    /**
+     * PublicController constructor.
+     * @param \Doctrine\ORM\EntityManager $em
+     * @param AuthController $auth
+     */
+    public function __construct(\Doctrine\ORM\EntityManager $em, AuthController $auth)
     {
         $this->em = $em;
+        $this->auth = $auth;
     }
 
 
     public function getAllAction(Request $request, Response $response, array $args){
 
+        $currentUser = $this->auth->getAuthenticatedUser($request);
 
-        $userId = $request->getAttribute('userId');
-        $user = $this->em->getRepository('Src\Entity\Usuari')->find(1);
         $repo = $this->em->getRepository('Src\Entity\Notes');
 
-        $notes = $repo->findBy(array("user" => $user));
+        $notes = $repo->findBy(array("user" => $currentUser));
 
 
         $data = array();
