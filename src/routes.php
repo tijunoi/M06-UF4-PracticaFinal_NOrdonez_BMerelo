@@ -59,6 +59,8 @@ $app->group('/api', function () use ($app) {
 
     $app->get('/getAllWithTag',NotesController::class . ':getAllWithTagAction');
 
+    $app->put('/addTagOnNote',NotesController::class . ':addTagOnNoteAction');
+
     $app->post('/test', NotesController::class . ':testAction');
 
 });

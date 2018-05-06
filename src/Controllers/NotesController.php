@@ -355,6 +355,60 @@ class NotesController
         return $response->withJson($data, $code);
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function addTagOnNoteAction(Request $request, Response $response, array $args){
+
+        $currentUser = $this->auth->getAuthenticatedUser($request);
+
+        $id = $request->getParsedBodyParam('id');
+        $tag = $request->getParsedBodyParam('tag');
+
+        if (!is_null($id) && !is_null($tag)){
+
+            $repo = $this->em->getRepository('Src\Entity\Notes');
+
+            /** @var Notes $note */
+            $note = $repo->find($id);
+
+            if (!is_null($note)){
+                //check if owned
+                if ($note->getUser()->getId() == $currentUser->getId()) {
+
+                    if ($note->addInAvailibleTag($tag)) {
+                        $data["msg"] = "Tag has been added successfully to note.";
+                        $code = 200;
+                        $this->em->persist($note);
+                        $this->em->flush();
+                    } else {
+                        $data["msg"] = "There is no availible tags to add a new one on this note";
+                        $code = 500;
+                    }
+                } else {
+                    $data["msg"] = "You're not authorized to add a tag to this note.";
+                    $code = 403;
+                }
+            } else {
+                $data["msg"] = "Note with given id not found";
+                $code = 404;
+            }
+
+
+            //remove
+        } else {
+            $data["msg"] = "Missing request parameters.";
+            $code = 400;
+        }
+
+        return $response->withJson($data,$code);
+
+    }
 
     public function testAction(Request $request, Response $response, array $args)
     {
