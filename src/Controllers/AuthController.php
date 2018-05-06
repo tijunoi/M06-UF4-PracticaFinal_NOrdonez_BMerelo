@@ -109,7 +109,13 @@ class AuthController
         $user = $em->getRepository('Src\Entity\Usuari')->findOneBy(array('clau' => $token));
 
         if (!is_null($user)) {
-            if ($user->getLastLogin()->diff(new \DateTime())->i < 60){ //less than 60 minutes since last login
+
+            $date = $user->getLastLogin();
+
+            $now = new \DateTime('now');
+            $diff = $date->getTimestamp() - $now->getTimestamp();
+
+            if (abs($diff) < 3600){ //less than 60 minutes since last login
                 return true;
             }
         }
