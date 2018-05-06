@@ -10,7 +10,10 @@ namespace Src\Controllers;
 
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Slim\Http\Request;
+use Slim\Http\Response;
 use Slim\Middleware\TokenAuthentication\TokenNotFoundException;
 use Src\Auth\UnauthorizedException;
 use Src\Entity\Usuari;
@@ -31,6 +34,67 @@ class AuthController
     {
         $this->em = $em;
     }
+
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function getTokenAction(Request $request, Response $response, array $args){
+        $username = $request->getParsedBodyParam('username');
+
+        $data = array();
+        $code = 200;
+        if (!is_null($username)){
+
+            /** @var Usuari $user */
+            $user = $this->em->getRepository('Src\Entity\Usuari')->findOneBy(array('nom' => $username));
+
+            if (!is_null($user)) {
+                //generate token
+                $token = $this->generateToken($user);
+                $data['token'] = $token;
+                $data['token_type'] = "Bearer";
+                $data['expires_in'] = "1h";
+            } else {
+                //usernotfound
+                $data["msg"] = "Username not found";
+                $code = 204;
+            }
+
+
+        } else {
+            //return error
+            $data["msg"] = "Parameter username missing";
+            $code = 400;
+        }
+
+        return $response->withJson($data,$code);
+
+    }
+
+    /**
+     * @param Usuari $user
+     * @return string
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function generateToken(Usuari $user) {
+        $lastLogin = new \DateTime();
+        $sentenceToHash = 'L$n0t3' . $user->getNom() . $lastLogin->getTimestamp();
+        $token = hash('sha512',$sentenceToHash);
+        $user->setClau($token);
+        $user->setLastLogin($lastLogin);
+        $this->em->persist($user);
+        $this->em->flush();
+        return $token;
+    }
+
+
 
 
     /**

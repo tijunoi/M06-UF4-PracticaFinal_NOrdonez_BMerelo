@@ -35,8 +35,8 @@ $container[\Src\Controllers\AuthController::class] = function ($c) {
     return new Src\Controllers\AuthController($c["em"]);
 };
 
-$container[Src\Controllers\PublicController::class] = function ($c) {
-    return new Src\Controllers\PublicController($c["em"],$c[\Src\Controllers\AuthController::class]);
+$container[Src\Controllers\NotesController::class] = function ($c) {
+    return new Src\Controllers\NotesController($c["em"],$c[\Src\Controllers\AuthController::class]);
 };
 
 

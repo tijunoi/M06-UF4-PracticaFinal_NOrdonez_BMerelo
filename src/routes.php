@@ -2,7 +2,7 @@
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Src\Controllers\PublicController;
+use Src\Controllers\NotesController;
 
 // Routes
 
@@ -40,6 +40,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     return $response->withJson($data,200);
 });
 
-$app->get('/getAll',PublicController::class . ':getAllAction');
+$app->get('/getAll',NotesController::class . ':getAllAction');
 
 

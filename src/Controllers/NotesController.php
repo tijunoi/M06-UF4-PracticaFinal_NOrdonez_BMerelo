@@ -11,7 +11,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Src\Entity\Notes;
 
-class PublicController
+class NotesController
 {
     /**
      * @var \Doctrine\ORM\EntityManager
