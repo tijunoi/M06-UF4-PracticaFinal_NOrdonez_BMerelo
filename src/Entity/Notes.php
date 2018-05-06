@@ -275,6 +275,24 @@ class Notes
         $this->lastmodificationdata = $lastmodificationdata;
     }
 
+    /**
+     * @return Usuari
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param Usuari $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+
+
 
 
 
