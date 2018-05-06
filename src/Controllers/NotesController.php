@@ -291,6 +291,71 @@ class NotesController
 
     }
 
+    public function getAllWithTagAction(Request $request, Response $response, array $args){
+
+        $repo = $this->em->getRepository('Src\Entity\Notes');
+
+        $orderArray = null;
+
+        $orderBy = $request->getQueryParam('order');
+        $tag = $request->getQueryParam('tag');
+
+        if (!is_null($tag)) {
+            //search
+           $builder =$repo->createQueryBuilder('note');
+           $builder->select('note')
+               ->where($builder->expr()->like('note.tag1',':tag'))
+               ->orWhere($builder->expr()->like('note.tag2','tag'))
+               ->orWhere($builder->expr()->like('note.tag3',':tag'))
+               ->orWhere($builder->expr()->like('note.tag4',':tag'))
+               ->setParameter('tag',$tag);
+
+
+
+            if (!is_null($orderBy)) {
+                if (strcmp($orderBy, "titol") == 0) {
+                    $builder->orderBy('note.title','ASC');
+                } else if (strcmp($orderBy, "data") == 0) {
+                    $builder->orderBy('note.createData', 'DESC');
+                }
+            }
+
+            $notes = $builder->getQuery()->getResult();
+
+            $data = array();
+            /** @var Notes $note */
+            foreach ($notes as $note) {
+
+                $new = array();
+                $new["id"] = $note->getId();
+                $new["title"] = $note->getTitle();
+                $new["content"] = $note->getContent();
+                $new["private"] = $note->getPrivate();
+                $new["tag1"] = $note->getTag1();
+                $new["tag2"] = $note->getTag2();
+                $new["tag3"] = $note->getTag3();
+                $new["tag4"] = $note->getTag4();
+                $new["book"] = $note->getBook();
+                $new["createData"] = $note->getCreateData();
+                $new["lastModificationData"] = $note->getLastmodificationdata();
+                $data[] = $new;
+            }
+            $code = 200;
+
+            if (empty($data)) {
+                $data["msg"] = "No notes found!";
+                $code = 204;
+            }
+
+
+        } else {
+            $data["msg"] = "Missing query parameter tag";
+            $code = 400;
+        }
+        return $response->withJson($data, $code);
+    }
+
+
     public function testAction(Request $request, Response $response, array $args)
     {
 

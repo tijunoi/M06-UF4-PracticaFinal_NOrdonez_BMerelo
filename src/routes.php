@@ -57,6 +57,8 @@ $app->group('/api', function () use ($app) {
 
     $app->delete('/remove', NotesController::class . ':deleteAction');
 
+    $app->get('/getAllWithTag',NotesController::class . ':getAllWithTagAction');
+
     $app->post('/test', NotesController::class . ':testAction');
 
 });
