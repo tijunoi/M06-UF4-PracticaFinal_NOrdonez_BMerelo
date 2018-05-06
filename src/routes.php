@@ -49,6 +49,8 @@ $app->group('/api', function () use ($app) {
     //Notes
     $app->get('/getAll',NotesController::class . ':getAllAction');
 
+    $app->get('/getPublic',NotesController::class . ':getPublicAction');
+
     $app->get('/test', NotesController::class . ':testAction');
 
 });
