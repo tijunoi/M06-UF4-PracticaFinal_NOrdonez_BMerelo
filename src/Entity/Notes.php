@@ -312,6 +312,23 @@ class Notes
         return true;
     }
 
+    public function deleteTag($tag) {
+
+        if (strcmp($this->tag1, $tag) == 0) {
+            $this->tag1 = null;
+        } else if (strcmp($this->tag2, $tag) == 0) {
+            $this->tag2 = null;
+        } else if (strcmp($this->tag3, $tag) == 0){
+            $this->tag3 = null;
+        } else if (strcmp($this->tag4, $tag) == 0) {
+            $this->tag4 = null;
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
 
 
 
