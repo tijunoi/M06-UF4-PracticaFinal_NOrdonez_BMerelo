@@ -55,6 +55,8 @@ $app->group('/api', function () use ($app) {
 
     $app->post('/insert', NotesController::class . ':insertAction');
 
+    $app->delete('/remove', NotesController::class . ':deleteAction');
+
     $app->post('/test', NotesController::class . ':testAction');
 
 });

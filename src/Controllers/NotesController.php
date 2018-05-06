@@ -242,6 +242,55 @@ class NotesController
         return $response->withJson($data,$code);
 
     }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function deleteAction(Request $request, Response $response, array $args){
+
+        $currentUser = $this->auth->getAuthenticatedUser($request);
+
+        $id = $request->getParsedBodyParam('id');
+
+        if (!is_null($id)){
+
+            $repo = $this->em->getRepository('Src\Entity\Notes');
+
+            $note = $repo->find($id);
+
+            if (!is_null($note)){
+                //check if owned
+                if ($note->getUser()->getId() == $currentUser->getId()) {
+                    $this->em->remove($note);
+                    $this->em->flush();
+                    $data["msg"] = "Note has been deleted successfully.";
+                    $code = 200;
+                } else {
+                    $data["msg"] = "You're not authorized to delete this note.";
+                    $code = 403;
+                }
+            } else {
+                $data["msg"] = "Note with given id not found";
+                $code = 404;
+            }
+
+
+            //remove
+        } else {
+            $data["msg"] = "Missing parameter id.";
+            $code = 400;
+        }
+
+        return $response->withJson($data,$code);
+
+
+    }
+
     public function testAction(Request $request, Response $response, array $args)
     {
 
