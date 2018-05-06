@@ -27,10 +27,12 @@ $authenticator = function ($request, \Slim\Middleware\TokenAuthentication $token
 
 
 $app->add(new \Slim\Middleware\TokenAuthentication([
-    'path' => '/getAll',
+    'path' => '/api',
+    'passthrough' =>  '/api/getToken',
     'secure' => false,
     'authenticator' => $authenticator
 ]));
+
 
 $app->get('/', function (Request $request, Response $response, array $args) {
 
@@ -40,6 +42,14 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     return $response->withJson($data,200);
 });
 
-$app->get('/getAll',NotesController::class . ':getAllAction');
+$app->group('/api', function () use ($app) {
+    //Auth
+    $app->post('/getToken', \Src\Controllers\AuthController::class . ':getTokenAction');
+
+    //Notes
+    $app->get('/getAll',NotesController::class . ':getAllAction');
+
+
+});
 
 
