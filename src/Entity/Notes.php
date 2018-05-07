@@ -297,13 +297,13 @@ class Notes
      */
     public function addInAvailibleTag($tag){
 
-        if (is_null($this->tag1)) {
+        if (is_null($this->tag1) || empty(trim($this->tag1))) {
             $this->tag1 = $tag;
-        } else if (is_null($this->tag2)) {
+        } else if (is_null($this->tag2) || empty(trim($this->tag2))) {
             $this->tag2 = $tag;
-        } else if (is_null($this->tag3)){
+        } else if (is_null($this->tag3) || empty(trim($this->tag3))){
             $this->tag3 = $tag;
-        } else if (is_null($this->tag4)) {
+        } else if (is_null($this->tag4) || empty(trim($this->tag4))) {
             $this->tag4 = $tag;
         } else {
             return false;
