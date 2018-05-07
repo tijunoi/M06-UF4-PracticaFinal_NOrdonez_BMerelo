@@ -466,6 +466,84 @@ class NotesController
 
     }
 
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function updateNoteAction(Request $request, Response $response, array $args) {
+
+        $currentUser = $this->auth->getAuthenticatedUser($request);
+
+        $id = $request->getParsedBodyParam('id');
+
+        if (!is_null($id)) {
+
+            $repo = $this->em->getRepository('Src\Entity\Notes');
+
+            /** @var Notes $note */
+            $note = $repo->find($id);
+
+            if (!is_null($note)){
+
+                if ($note->getUser()->getId() == $currentUser->getId()){
+
+                    $shouldUpdate = false;
+
+                    $title = $request->getParsedBodyParam('title');
+                    if (!is_null($title)) {
+                        $note->setTitle($title);
+                        $shouldUpdate = true;
+                    }
+
+                    $content = $request->getParsedBodyParam('content');
+                    if (!is_null($content)) {
+                        $note->setContent($content);
+                        $shouldUpdate = true;
+                    }
+
+                    $private = $request->getParsedBodyParam('private');
+                    if (!is_null($private)) {
+                        if (strcmp($private,"true") == 0) {
+                            $note->setPrivate(true);
+                        } else {
+                            $note->setPrivate(false);
+                        }
+                        $shouldUpdate = true;
+                    }
+
+                    $book = $request->getParsedBodyParam('book');
+                    if (!is_null($book)) {
+                        $note->setBook($book);
+                    }
+
+                    if ($shouldUpdate == true){
+                        $note->setLastmodificationdata(new \DateTime());
+                        $this->em->persist($note);
+                        $this->em->flush();
+                        $data["msg"] = "The note has been updated successfully.";
+                        $code = 200;
+                    }
+                } else {
+                    $data["msg"] = "You're not authorised to update this note";
+                    $code = 403;
+                }
+
+            } else {
+                $data["msg"] = "A note with this id doesn't exist";
+                $code = 404;
+            }
+
+        } else {
+            $data["msg"] = "Missing id parameter.";
+            $code = 400;
+        }
+
+        return $response->withJson($data,$code);
+    }
 
     public function testAction(Request $request, Response $response, array $args)
     {

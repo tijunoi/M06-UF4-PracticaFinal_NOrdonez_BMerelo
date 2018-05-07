@@ -63,6 +63,8 @@ $app->group('/api', function () use ($app) {
 
     $app->delete('/deleteTagOnNote', NotesController::class . ':deleteTagOnNoteAction');
 
+    $app->put('/updateNote', NotesController::class . ':updateNoteAction');
+
     $app->post('/test', NotesController::class . ':testAction');
 
 });
