@@ -65,6 +65,8 @@ $app->group('/api', function () use ($app) {
 
     $app->put('/updateNote', NotesController::class . ':updateNoteAction');
 
+    $app->put('/flipPrivate', NotesController::class . ':flipPrivateAction');
+
     $app->post('/test', NotesController::class . ':testAction');
 
 });
