@@ -526,6 +526,9 @@ class NotesController
                         $this->em->flush();
                         $data["msg"] = "The note has been updated successfully.";
                         $code = 200;
+                    } else {
+                        $data["msg"] = "No changes have been applied to the note.";
+                        $code = 200;
                     }
                 } else {
                     $data["msg"] = "You're not authorised to update this note";
@@ -543,6 +546,10 @@ class NotesController
         }
 
         return $response->withJson($data,$code);
+    }
+
+    public function flipPrivateAction(Request $request, Response $response, array $args){
+
     }
 
     public function testAction(Request $request, Response $response, array $args)
