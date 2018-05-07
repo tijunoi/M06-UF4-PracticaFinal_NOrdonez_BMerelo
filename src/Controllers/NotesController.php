@@ -198,7 +198,8 @@ class NotesController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function insertAction(Request $request, Response $response, array $args){
+    public function insertAction(Request $request, Response $response, array $args)
+    {
 
         $currentUser = $this->auth->getAuthenticatedUser($request);
 
@@ -216,7 +217,7 @@ class NotesController
             $note = new Notes();
             $note->setTitle($title);
             $note->setContent($content);
-            if (strcmp($private,"true") == 0 ){
+            if (strcmp($private, "true") == 0) {
                 $note->setPrivate(true);
             } else {
                 $note->setPrivate(false);
@@ -239,7 +240,7 @@ class NotesController
             $code = 400;
         }
 
-        return $response->withJson($data,$code);
+        return $response->withJson($data, $code);
 
     }
 
@@ -251,19 +252,20 @@ class NotesController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function deleteAction(Request $request, Response $response, array $args){
+    public function deleteAction(Request $request, Response $response, array $args)
+    {
 
         $currentUser = $this->auth->getAuthenticatedUser($request);
 
         $id = $request->getParsedBodyParam('id');
 
-        if (!is_null($id)){
+        if (!is_null($id)) {
 
             $repo = $this->em->getRepository('Src\Entity\Notes');
 
             $note = $repo->find($id);
 
-            if (!is_null($note)){
+            if (!is_null($note)) {
                 //check if owned
                 if ($note->getUser()->getId() == $currentUser->getId()) {
                     $this->em->remove($note);
@@ -286,12 +288,13 @@ class NotesController
             $code = 400;
         }
 
-        return $response->withJson($data,$code);
+        return $response->withJson($data, $code);
 
 
     }
 
-    public function getAllWithTagAction(Request $request, Response $response, array $args){
+    public function getAllWithTagAction(Request $request, Response $response, array $args)
+    {
 
         $repo = $this->em->getRepository('Src\Entity\Notes');
 
@@ -302,19 +305,18 @@ class NotesController
 
         if (!is_null($tag)) {
             //search
-           $builder =$repo->createQueryBuilder('note');
-           $builder->select('note')
-               ->where($builder->expr()->like('note.tag1',':tag'))
-               ->orWhere($builder->expr()->like('note.tag2','tag'))
-               ->orWhere($builder->expr()->like('note.tag3',':tag'))
-               ->orWhere($builder->expr()->like('note.tag4',':tag'))
-               ->setParameter('tag',$tag);
-
+            $builder = $repo->createQueryBuilder('note');
+            $builder->select('note')
+                ->where($builder->expr()->like('note.tag1', ':tag'))
+                ->orWhere($builder->expr()->like('note.tag2', 'tag'))
+                ->orWhere($builder->expr()->like('note.tag3', ':tag'))
+                ->orWhere($builder->expr()->like('note.tag4', ':tag'))
+                ->setParameter('tag', $tag);
 
 
             if (!is_null($orderBy)) {
                 if (strcmp($orderBy, "titol") == 0) {
-                    $builder->orderBy('note.title','ASC');
+                    $builder->orderBy('note.title', 'ASC');
                 } else if (strcmp($orderBy, "data") == 0) {
                     $builder->orderBy('note.createData', 'DESC');
                 }
@@ -363,21 +365,22 @@ class NotesController
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function addTagOnNoteAction(Request $request, Response $response, array $args){
+    public function addTagOnNoteAction(Request $request, Response $response, array $args)
+    {
 
         $currentUser = $this->auth->getAuthenticatedUser($request);
 
         $id = $request->getParsedBodyParam('id');
         $tag = $request->getParsedBodyParam('tag');
 
-        if (!is_null($id) && !is_null($tag)){
+        if (!is_null($id) && !is_null($tag)) {
 
             $repo = $this->em->getRepository('Src\Entity\Notes');
 
             /** @var Notes $note */
             $note = $repo->find($id);
 
-            if (!is_null($note)){
+            if (!is_null($note)) {
                 //check if owned
                 if ($note->getUser()->getId() == $currentUser->getId()) {
 
@@ -406,9 +409,63 @@ class NotesController
             $code = 400;
         }
 
-        return $response->withJson($data,$code);
+        return $response->withJson($data, $code);
 
     }
+
+    /**
+     * @param Request $request
+     * @param Response $response
+     * @param array $args
+     * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function deleteTagOnNoteAction(Request $request, Response $response, array $args)
+    {
+
+        $currentUser = $this->auth->getAuthenticatedUser($request);
+
+        $id = $request->getParsedBodyParam('id');
+        $tag = $request->getParsedBodyParam('tag');
+
+        if (!is_null($id) && !is_null($tag)) {
+
+            $repo = $this->em->getRepository('Src\Entity\Notes');
+
+            /** @var Notes $note */
+            $note = $repo->find($id);
+
+            if (!is_null($note)) {
+                //check if owned
+                if ($note->getUser()->getId() == $currentUser->getId()) {
+
+                    if ($note->deleteTag($tag)) {
+                        $data["msg"] = "Tag has been removed successfully from note.";
+                        $code = 200;
+                        $this->em->persist($note);
+                        $this->em->flush();
+                    } else {
+                        $data["msg"] = "Tag doesn't exist on this note";
+                        $code = 500;
+                    }
+                } else {
+                    $data["msg"] = "You're not authorized to remove a tag from this note.";
+                    $code = 403;
+                }
+            } else {
+                $data["msg"] = "Note with given id not found";
+                $code = 404;
+            }
+        } else {
+            $data["msg"] = "Missing request parameters.";
+            $code = 400;
+        }
+
+        return $response->withJson($data, $code);
+
+    }
+
 
     public function testAction(Request $request, Response $response, array $args)
     {
